@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+
+@using Microsoft.AspNetCore.Identity
+@using AuthTest.Model
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ApplicationUser CurrentUser = null;
+    string fullName = "";
+    string rollName = "";
+
+    if (SignInManager.IsSignedIn(User))
+    {
+        CurrentUser = await UserManager.GetUserAsync(User);
+        fullName = CurrentUser.FullName;
+        var roles = await UserManager.GetRolesAsync(CurrentUser);
+        rollName = roles.FirstOrDefault();
+    }
+}
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AuthTest</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AuthTest.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <a asp-page="/Index" class="logo">
+                    <i class="fas fa-tasks"></i>
+                    <span>TaskFlow</span>
+                </a>
+                <ul class="nav-links">
+                    @if(User.Identity.IsAuthenticated)
+                    {
+                        <li><a asp-area="" asp-page="/Index" class="nav-link">Team Overview</a></li>
+
+                        if(User.IsInRole("Manager"))
+                        {
+                            <li><a asp-page="/Manager/Dashboard" class="nav-link">Dashboard</a></li>
+                            <li><a asp-page="/Manager/Edit" class="nav-link">Edit</a></li>
+                        }
+                        else if(User.IsInRole("TeamMember"))
+                        {
+                            <li><a href="/Member/Dashboard" class="nav-link">Dashboard</a></li>
+                        }
+                        else
+                        {
+                            // admin role or ...
+                        }
+                            <form method="post" asp-page="/Logout">
+                                <button type="submit" id="logout-button" class="nav-link">Log out</button>
+                            </form>
+
+                        <div class="user-actions">
+                            <div style="margin-left: 15px; display: flex; align-items: center;">
+                                <div class="user-avatar">
+                                    <img id="avatar-image" src="/images/profile-avatar-image.jpg">
+                                </div>
+                                <span>@(fullName) (@rollName)</span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <li><a asp-area="Identity" asp-page="/Account/Register" class="nav-link">Register</a></li>
+                        <li><a asp-area="Identity" asp-page="/Account/Login" class="nav-link">Login</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </header>
+    @RenderBody()
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

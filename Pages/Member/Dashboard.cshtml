@@ -1,0 +1,1200 @@
+@page
+@model AuthTest.Pages.Member.DashboardModel
+
+@{
+    ViewData["Title"] = "Team Member Page";
+}
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --success: #4cc9f0;
+        --warning: #f72585;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --gray: #6c757d;
+        --light-gray: #e9ecef;
+        --border-radius: 12px;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    header {
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+    .nav-links {
+        display: flex;
+        list-style: none;
+    }
+
+        .nav-links li {
+            margin-left: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+            .nav-links a:hover, .nav-links a.active {
+                color: var(--primary);
+            }
+
+    .user-actions {
+        display: flex;
+        align-items: center;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+
+    .btn-primary {
+        background-color: var(--primary);
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+
+    .btn-outline {
+        background-color: transparent;
+        border: 1px solid #007bff;
+        color: var(--primary);
+    }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+    .btn-success {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+        .btn-success:hover {
+            background-color: #3d8b40;
+        }
+
+    .btn-sm {
+        padding: 5px 10px;
+font-size: 0.85rem;
+}
+
+
+    /* Dashboard Layout */
+    .dashboard {
+        display: flex;
+        margin-top: 30px;
+        gap: 20px;
+    }
+
+    .sidebar {
+        flex: 0 0 300px;
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        height: fit-content;
+    }
+
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Card Styles */
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+    /* Form Styles */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--light-gray);
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+
+    /* Task Styles */
+    .task-list {
+        list-style: none;
+    }
+
+    .task-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    padding: 20px;
+    border-bottom: 1px solid var(--light-gray);
+    transition: all 0.3s ease;
+    align-items: start;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    background: white;
+}
+
+.task-item:hover {
+    background-color: var(--light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.task-info h4 {
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--dark);
+    line-height: 1.4;
+}
+
+.task-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: var(--gray);
+    align-items: center;
+}
+
+.task-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.task-meta .fa-calendar {
+    color: var(--primary);
+}
+
+.task-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-end;
+    min-width: 140px;
+}
+
+.status-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+    min-width: 100px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--light-gray);
+    color: var(--dark);
+    min-width: 80px;
+}
+
+.btn-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.1);
+}
+
+    /* Base Badge Style */
+.status-badge, .priority-badge {
+    display: flex;
+  align-items: center;
+  justify-content: center;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-block;
+    text-align: center;
+    height: 30px;
+}
+
+/* Project Status Badges */
+.status-active {
+    background-color: rgba(212, 237, 218, 0.2);
+    color: #155724;
+    @* border-color: rgba(195, 230, 203, 0.5); *@
+}
+
+.status-planning {
+    background-color: rgba(255, 243, 205, 0.2);
+    color: #856404;
+    @* border-color: rgba(255, 238, 186, 0.5); *@
+}
+
+.status-on-hold {
+    background-color: rgba(226, 227, 229, 0.2);
+    color: #383d41;
+    @* border-color: rgba(214, 216, 219, 0.5); *@
+}
+
+.status-completed {
+    background-color: rgba(209, 236, 241, 0.2);
+    color: #0c5460;
+    @* border-color: rgba(190, 229, 235, 0.5); *@
+}
+
+.status-cancelled {
+    background-color: rgba(248, 215, 218, 0.2);
+    color: #721c24;
+    @* border-color: rgba(245, 198, 203, 0.5); *@
+}
+
+/* Task Status Badges */
+.status-todo {
+    background-color: rgba(233, 236, 239, 0.2);
+    color: #495057;
+    @* border-color: rgba(222, 226, 230, 0.5); *@
+}
+
+.status-in-progress {
+    background-color: rgba(204, 231, 255, 0.2);
+    color: #004085;
+    @* border-color: rgba(179, 215, 255, 0.5); *@
+}
+
+.status-review {
+    background-color: rgba(255, 243, 205, 0.7);
+    color: #856404;
+    @* border-color: rgba(255, 238, 186, 0.5); *@
+}
+
+.status-done {
+    background-color: rgba(212, 237, 218, 0.2);
+    color: #155724;
+    @* border-color: rgba(195, 230, 203, 0.5); *@
+}
+
+.status-blocked {
+    background-color: rgba(248, 215, 218, 0.2);
+    color: #721c24;
+    @* border-color: rgba(245, 198, 203, 0.5); *@
+}
+
+/* Priority Badges */
+.priority-critical {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    @* border-color: rgba(220, 53, 69, 0.3); *@
+}
+
+.priority-high {
+    background-color: rgba(253, 126, 20, 0.2);
+    color: #fd7e14;
+    @* border-color: rgba(253, 126, 20, 0.3); *@
+}
+
+.priority-medium {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #856404;
+    @* border-color: rgba(255, 193, 7, 0.3); *@
+}
+
+.priority-low {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #155724;
+    @* border-color: rgba(40, 167, 69, 0.3); *@
+}
+
+/* Optional: Small badge variant */
+.badge-sm {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    min-width: 60px;
+}
+
+/* Optional: Large badge variant */
+.badge-lg {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    min-width: 80px;
+}
+
+/* Optional: Small badge variant */
+.badge-sm {
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    min-width: 60px;
+}
+
+/* Optional: Large badge variant */
+.badge-lg {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    min-width: 80px;
+}
+
+    /* Filter Section */
+    .filter-section {
+        margin-bottom: 25px;
+    }
+
+        .filter-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+    .filter-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .filter-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .projects-list {
+        list-style: none;
+        margin-top: 10px;
+    }
+
+    .project-item {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--light-gray);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .project-item:last-child {
+            border-bottom: none;
+        }
+
+    .collapse-section {
+        margin-top: 20px;
+    }
+
+    .collapse-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        padding: 10px 0;
+    }
+
+    .collapse-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+        .collapse-content.expanded {
+            max-height: 1000px;
+        }
+
+    /* Stats Section */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .stat-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+
+    /* Task Categories */
+    .task-categories {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .task-category {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--light-gray);
+    }
+
+    .category-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .category-count {
+        background-color: var(--primary);
+        color: white;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    /* Responsive Styles */
+    @@media (max-width: 768px) {
+        .dashboard {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            flex: 0 0 auto;
+        }
+    }
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 20px;
+    }
+
+    .modal-container {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        width: 100%;
+        max-width: 420px;
+        overflow: hidden;
+        animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @@keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px) scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+    }
+
+    .modal-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+        .modal-icon i {
+            font-size: 2rem;
+        }
+
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .modal-subtitle {
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+        backdrop-filter: blur(10px);
+    }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    .project-card {
+        background: var(--light);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        border-left: 4px solid var(--primary);
+        transition: var(--transition);
+    }
+
+        .project-card:hover {
+            transform: translateX(5px);
+        }
+
+    .project-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .project-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--primary);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .project-info h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 2px;
+    }
+
+    .project-info p {
+        color: var(--gray);
+        font-size: 0.85rem;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .input-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        color: var(--gray);
+        z-index: 2;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 14px 15px 14px 45px;
+        border: 2px solid var(--light-gray);
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: var(--transition);
+        background: white;
+        letter-spacing: 2px;
+        font-family: 'Courier New', monospace;
+    }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-input::placeholder {
+            color: #adb5bd;
+            letter-spacing: normal;
+            font-family: inherit;
+        }
+
+    .input-hint {
+        display: block;
+        margin-top: 6px;
+        color: var(--gray);
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .input-hint i {
+            color: var(--primary);
+        }
+
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 14px 20px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-outline {
+        background: white;
+        border: 2px solid var(--light-gray);
+        color: var(--gray);
+    }
+
+        .btn-outline:hover {
+            border-color: var(--gray);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+        border: 2px solid var(--primary);
+    }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            border-color: var(--secondary);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+    .validation-message {
+        color: var(--warning);
+        font-size: 0.85rem;
+        margin-top: 6px;
+        display: block;
+    }
+
+    /* Responsive */
+    @@media (max-width: 480px) {
+        .modal-container {
+            max-width: 100%;
+        }
+
+        .modal-header {
+            padding: 25px 20px;
+        }
+
+        .modal-body {
+            padding: 25px 20px;
+        }
+
+        .modal-actions {
+            flex-direction: column;
+        }
+
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+        }
+
+            .modal-icon i {
+                font-size: 1.8rem;
+            }
+    }
+</style>
+
+<div class="container">
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Task Filters -->
+            <div class="filter-section">
+                <h3>Filter My Tasks</h3>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="member-filter-today" checked>
+                        <label for="member-filter-today">Due Today</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="member-filter-week" checked>
+                        <label for="member-filter-week">This Week</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="member-filter-overdue" checked>
+                        <label for="member-filter-overdue">Overdue</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="member-filter-upcoming" checked>
+                        <label for="member-filter-upcoming">Upcoming</label>
+                    </div>
+                    <form method="post" asp-page-handler="FilterTask">
+                        <div class="form-group">
+                        <label asp-for="Filter.SelectedStatusId" class="form-label">Status</label>
+                        <select asp-for="Filter.SelectedStatusId" asp-items="@Model.TasksStatus" class="form-control">
+                            <option value="0">All Statuses</option>
+                        </select>
+                        <span asp-validation-for="Filter.SelectedStatusId"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Filter.SelectedPriorityId" class="form-label">Priority</label>
+                        <select asp-for="Filter.SelectedPriorityId" asp-items="@Model.TasksPriority" class="form-control">
+                            <option value="0">All Priorities</option>
+                        </select>
+                        <span asp-validation-for="Filter.SelectedPriorityId"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Filter.SelectedProjectId" class="form-label">Project</label>
+                        <select asp-for="Filter.SelectedProjectId" asp-items="@Model.MyProjectsDropdown" class="form-control">
+                            <option value="0">All Projects</option>
+                        </select>
+                        <span asp-validation-for="Filter.SelectedProjectId"></span>
+                    </div>
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- My Projects -->
+            <div class="filter-section">
+                <h3>My Projects</h3>
+                <ul class="projects-list">
+                    @if(Model?.MyProjects != null && Model.MyProjects.Any())
+                        {
+                            foreach(var record in Model?.MyProjects)
+                            {
+                    <li class="project-item">
+                        <span>@record?.Project?.Name</span>
+                        <span class="status-badge @record?.Project?.Status?.CssClassName">@record?.Project?.Status?.Name</span>
+                    </li>
+                            }
+                        }
+                </ul>
+            </div>
+
+            <!-- All Projects -->
+            <div class="collapse-section">
+                <div class="collapse-header" id="member-all-projects-toggle">
+                    <h3>All Projects</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="collapse-content" id="member-all-projects-content">
+                    <ul class="projects-list">
+                        @if(Model?.AllProjects != null && Model.AllProjects.Any())
+                            {
+                                foreach(var project in Model.AllProjects)
+                                {
+                                    <li class="project-item">
+                                        <span>@project.Name</span>
+                                        <button data-project="@project.Name" data-projectId="@project.Id"
+                                                class="btn-success btn-sm join-project-btn" style="border: navajowhite;">
+                                            Join
+                                        </button>
+                                    </li>
+                                }
+                            }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Stats Overview -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-value">@(Model?.Tasks?.Count ?? 0)</div>
+                    <div class="stat-label">My Tasks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@(Model?.OverDueTasks?.Count ?? 0)</div>
+                    <div class="stat-label">Overdue</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@(Model?.ThisWeekTasks?.Count ?? 0)</div>
+                    <div class="stat-label">Due This Week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@(Model?.CompletedTasks?.Count ?? 0)</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+
+            <div class="card" id="today-tasks">
+                    <div class="card-header">
+                        <h3 class="card-title">Tasks Due Today</h3>
+                    </div>
+                    <ul class="task-list">
+                        @if(Model?.TodayTasks != null && Model.TodayTasks.Any())
+                        {
+                            foreach(var task in Model?.TodayTasks)
+                            {
+                                <li class="task-item">
+                            <div class="task-info">
+                                <h4>@task?.Title</h4>
+                                <div class="task-meta">
+                                    <span><i class="far fa-calendar"></i> Due: Today</span>
+                                    <span class="priority-badge @task?.Priority?.CssClassName"><i class="fas fa-exclamation-circle"></i> @task?.Priority?.Name</span>
+                                    <span>Project: @task?.Project?.Name</span>
+                                </div>
+                            </div>
+                            <div class="task-actions">
+                                <span class="status-badge @task?.Status?.CssClassName">@task?.Status?.Name</span>
+                                <a asp-page="/Member/Edit" asp-route-id="@task.Id" class="btn btn-outline">Edit</a>
+                            </div>
+                        </li>
+                            }
+                        }
+                    </ul>
+            </div>
+
+            <div class="card" id="this-week-tasks">
+                    <div class="card-header">
+                        <h3 class="card-title">Tasks Due This Week</h3>
+                    </div>
+                    <ul class="task-list">
+                        @if(Model?.ThisWeekTasks != null && Model.ThisWeekTasks.Any())
+                        {
+                            foreach(var task in Model?.ThisWeekTasks)
+                            {
+                                <li class="task-item">
+                            <div class="task-info">
+                                <h4>@task?.Title</h4>
+                                <div class="task-meta">
+                                    <span><i class="far fa-calendar"></i> Due: @Math.Ceiling((task.DueDate - DateTime.Now).TotalDays) days</span>
+                                    <span class="priority-badge @task?.Priority?.CssClassName"><i class="fas fa-exclamation-circle"></i> @task?.Priority?.Name</span>
+                                    <span>Project: @task?.Project?.Name</span>
+                                </div>
+                            </div>
+                            <div class="task-actions">
+                                <span class="status-badge @task?.Status?.CssClassName">@task?.Status?.Name</span>
+                                <a asp-page="/Member/Edit" asp-route-id="@task.Id" class="btn btn-outline">Edit</a>
+                            </div>
+                        </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            <div class="card" id="overdue-task">
+                    <div class="card-header">
+                        <h3 class="card-title">Overdue Tasks</h3>
+                    </div>
+                    <ul class="task-list">
+                        @if(Model?.OverDueTasks != null && Model.OverDueTasks.Any())
+                        {
+                            foreach(var task in Model?.OverDueTasks)
+                            {
+                                <li class="task-item">
+                            <div class="task-info">
+                                <h4>@task?.Title</h4>
+                                <div class="task-meta">
+                                    <span><i class="far fa-calendar"></i> Due: @Math.Ceiling((DateTime.Now - task.DueDate).TotalDays) days ago</span>
+                                    <span class="priority-badge @task?.Priority?.CssClassName"><i class="fas fa-exclamation-circle"></i> @task?.Priority?.Name</span>
+                                    <span>Project: @task?.Project?.Name</span>
+                                </div>
+                            </div>
+                            <div class="task-actions">
+                                <span class="status-badge @task?.Status?.CssClassName">@task?.Status?.Name</span>
+                                <a asp-page="/Member/Edit" asp-route-id="@task.Id" class="btn btn-outline">Edit</a>
+                            </div>
+                        </li>
+                            }
+                        }
+                    </ul>
+                </div>
+
+                <div class="card" id="upcoming-tasks">
+                    <div class="card-header">
+                        <h3 class="card-title">Upcoming Tasks</h3>
+                    </div>
+                    <ul class="task-list">
+                        @if(Model?.UpcomingTasks != null && Model.UpcomingTasks.Any())
+                        {
+                            foreach(var task in Model?.UpcomingTasks)
+                            {
+                                <li class="task-item">
+                            <div class="task-info">
+                                <h4>@task?.Title</h4>
+                                <div class="task-meta">
+                                    <span><i class="far fa-calendar"></i> Due: @Math.Ceiling((task.DueDate - DateTime.Now).TotalDays) days</span>
+                                    <span class="priority-badge @task?.Priority?.CssClassName"><i class="fas fa-exclamation-circle"></i> @task?.Priority?.Name</span>
+                                    <span>Project: @task?.Project?.Name</span>
+                                </div>
+                            </div>
+                            <div class="task-actions">
+                                <span class="status-badge @task?.Status?.CssClassName">@task?.Status?.Name</span>
+                                <a asp-page="/Member/Edit" asp-route-id="@task.Id" class="btn btn-outline">Edit</a>
+                            </div>
+                        </li>
+                            }
+                        }
+                    </ul>
+                </div>                
+            </div>
+        </div>
+    </div>
+
+<!-- Join Project Modal -->
+<div class="modal-overlay" id="join-project-modal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h2 class="modal-title" id="join-project-title">Join Project Team</h2>
+            <p class="modal-subtitle">Enter the invitation code to join the project</p>
+            <button class="close-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <form method="post" asp-page-handler="JoinProject" id="join-project-form">
+
+                <div class="form-group">
+
+                    <input asp-for="JoinProjectData.SelectedProjectId" id="selected-projectId" type="hidden" value="0" />
+                    <span asp-validation-for="JoinProjectData.SelectedProjectId"></span>
+
+                    <label asp-for="JoinProjectData.InvitationCode" class="form-label"></label>
+                    <div class="input-group">
+                        <i class="fas fa-key input-icon"></i>
+                        <input type="text"
+                            asp-for="JoinProjectData.InvitationCode"
+                            class="form-input"
+                            id="invitation-code"
+                            placeholder="Enter 5-digit code">
+                        <span asp-validation-for="JoinProjectData.InvitationCode"></span>
+                    </div>
+                    <span class="input-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Get the code from your project manager
+                    </span>
+                    <span class="validation-message"></span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i>
+                        Join Project
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // --- Collapse functionality for All Projects ---
+    const memberAllProjectsToggle = document.getElementById('member-all-projects-toggle');
+    const memberAllProjectsContent = document.getElementById('member-all-projects-content');
+
+    if (memberAllProjectsToggle) {
+        memberAllProjectsToggle.addEventListener('click', function() {
+            memberAllProjectsContent.classList.toggle('expanded');
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-chevron-down');
+            icon.classList.toggle('fa-chevron-up');
+        });
+    }
+
+    // --- Filter checkbox functionality ---
+    const pairs = {
+        "member-filter-today": "today-tasks",
+        "member-filter-week": "this-week-tasks",
+        "member-filter-overdue": "overdue-task",
+        "member-filter-upcoming": "upcoming-tasks"
+    };
+
+    for (const [checkboxId, sectionId] of Object.entries(pairs)) {
+        const checkbox = document.getElementById(checkboxId);
+        const section = document.getElementById(sectionId);
+        if (!checkbox || !section) continue;
+
+        // initial visibility
+        section.style.display = checkbox.checked ? "block" : "none";
+
+        // toggle on change
+        checkbox.addEventListener("change", function() {
+            section.style.display = this.checked ? "block" : "none";
+        });
+    }
+
+    // --- Join Project Modal ---
+    const joinProjectModal = document.getElementById('join-project-modal');
+    const joinProjectBtns = document.querySelectorAll('.join-project-btn');
+    const joinProjectTitle = document.getElementById('join-project-title');
+    const selectedProjectIdInput = document.getElementById('selected-projectId');
+
+    joinProjectBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const projectName = this.getAttribute('data-project');
+            const projectId = this.getAttribute('data-projectId');
+
+            joinProjectModal.style.display = 'flex';
+            joinProjectTitle.textContent = `Join ${projectName}`;
+            selectedProjectIdInput.value = projectId;
+        });
+    });
+
+    // --- Close Modals ---
+    const closeModalBtns = document.querySelectorAll('.close-modal');
+    closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            alert(1);
+            const modal = this.closest('.modal');
+            if (modal) modal.style.display = 'none';
+        });
+    });
+
+    // close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    });
+});
+</script>
