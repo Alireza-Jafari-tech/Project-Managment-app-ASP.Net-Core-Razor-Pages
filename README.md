@@ -62,6 +62,14 @@ It demonstrates a complete multi-role management system: managers create project
 
 ## 📸 Snapshots / Screenshots
 
+* Register Page
+
+  ![register](https://github.com/user-attachments/assets/3125a6ba-f7c2-40d8-a1c1-c398db569340)
+
+* Login Page
+
+  ![log-in](https://github.com/user-attachments/assets/3e770ec7-dd1a-4b8f-998d-cc3a4d639b23)
+
 * Manager Dashboard Page
   
   ![manager-dashboard](https://github.com/user-attachments/assets/797bc8d8-3821-4a59-82b0-2f4e11fd69fb)
